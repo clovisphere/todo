@@ -12,7 +12,7 @@ A TODO app that doesn't suck 😊.
     - [ ] HTML, CSS, vanilla JS
 
 - Backend (API)
-    - [ ] [Golang](https://go.dev/) ([chi](https://github.com/go-chi/chi))
+    - [ ] [Go](https://go.dev/) ([chi](https://github.com/go-chi/chi))
 
 
 ### Author
