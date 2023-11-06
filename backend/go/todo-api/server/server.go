@@ -25,7 +25,7 @@ func New(opts Options) *Server {
 	mux := chi.NewMux()
 	return &Server{
 		address: address,
-		//mux:     mux,
+		mux:     mux,
 		server: &http.Server{
 			Addr:              address,
 			Handler:           mux,
