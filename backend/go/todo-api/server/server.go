@@ -1,6 +1,11 @@
+// Package server contains everything for setting up and running the HTTP server.
 package server
 
 import (
+	"context"
+	"errors"
+	"fmt"
+	"log"
 	"net"
 	"net/http"
 	"strconv"
@@ -35,4 +40,28 @@ func New(opts Options) *Server {
 			IdleTimeout:       5 * time.Second,
 		},
 	}
+}
+
+// Start the Server by setting up routes and listening for HTTP requests on the given address.
+func (s *Server) Start() error {
+	s.setupRoutes()
+
+	log.Printf("starting server, listening on: %s\n", s.address)
+	if err := s.server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+		return fmt.Errorf("error starting server: %w", err)
+	}
+	return nil
+}
+
+// Stop the Server gracefully within the timeout
+func (s *Server) Stop() error {
+	log.Print("stopping server")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	if err := s.server.Shutdown(ctx); err != nil {
+		return fmt.Errorf("error stopping server: %w", err)
+	}
+	return nil
 }
