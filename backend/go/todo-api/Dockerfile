@@ -1,4 +1,5 @@
-FROM golang:1.21-bullseye AS base
+# Build application from source
+FROM golang:1.21-bullseye AS build-stage
 WORKDIR /src
 
 # To make argument value available for use in `-ldflags`
@@ -11,17 +12,17 @@ RUN go mod verify
 COPY . ./
 
 RUN echo "building server using release version: ${RELEASE}"
-RUN GOOS=linux GOARCH=amd64 go build -ldflags="-X main.release=${RELEASE}" -o /bin/a.out ./cmd/server
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-X main.release=${RELEASE}" -o /bin/a.out ./cmd/server
 
 
+# Deploy application binary into a lean image
 FROM scratch
-WORKDIR /app
+WORKDIR /
 
-COPY --from=base /usr/share/zoneinfo /usr/share/zoneinfo
-COPY --from=base /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --from=base /etc/passwd /etc/passwd
-COPY --from=base /etc/group /etc/group
+COPY --from=build-stage /usr/share/zoneinfo /usr/share/zoneinfo
+COPY --from=build-stage /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=build-stage /etc/passwd /etc/passwd
+COPY --from=build-stage /etc/group /etc/group
+COPY --from=build-stage /bin/a.out /a.out
 
-COPY --from=base /bin/a.out ./
-
-CMD ["./a.out"]
+CMD ["/a.out"]
