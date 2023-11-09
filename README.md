@@ -1,6 +1,6 @@
 # The (rule 'em all ) TODO app
 
-A TODO app that doesn't suck 😊.
+A TODO app that doesn't suck 😊
 
 ![alt a Richard Feyman's quote](./richard_feynman.jpeg)
 
