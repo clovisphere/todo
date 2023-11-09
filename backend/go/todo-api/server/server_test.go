@@ -16,8 +16,8 @@ func TestServerStart(t *testing.T) {
 		cleanup := integration_test.CreateServer()
 		defer cleanup()
 
-		resp, err := http.Get("http://localhost:9000")
+		res, err := http.Get("http://localhost:9000")
 		is.NoErr(err)
-		is.Equal(http.StatusNotFound, resp.StatusCode)
+		is.Equal(http.StatusNotFound, res.StatusCode)
 	})
 }
